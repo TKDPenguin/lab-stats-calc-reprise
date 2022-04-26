@@ -5,12 +5,15 @@ function readAllNumbers() {
     let numbers = [];
     //Step 4: update to handle multiple numbers on one line
     for (let i = 0; i < lines.length; i++) {
-        if (lines[i] === "")
-            continue;
-        let num = Number(lines[i]);
-        if (isNaN(num))
-            continue;
-        numbers.push(num);
+        let line = lines[i].split(" ");
+        for (let n = 0; n < line.length; n++) {
+            if (line[n] === "")
+                continue;
+            let num = Number(line[n]);
+            if (isNaN(num))
+                continue;
+            numbers.push(num);
+        }
     }
     return numbers;
 }
@@ -35,16 +38,29 @@ function getAboveBelowMean(nums) {
 }
 // PART A : Basic Stats
 function getMedian(nums) {
-    //Step 1
-    return NaN; // remove me!
+    if (nums.length % 2 == 1) { // if odd number of items
+        return nums[(nums.length - 1) / 2];
+    }
+    else { // if even number of items
+        let floor = nums[(nums.length / 2) - 1];
+        let ceil = nums[(nums.length / 2)];
+        return (floor + ceil) / 2;
+    }
 }
 function getMinMax(nums) {
     //Step 2
-    return [NaN, NaN]; // remove me!
+    return [nums[0], nums[nums.length - 1]];
 }
 function getStdDev(nums) {
-    //Step 3
-    return NaN; // remove me!
+    let total = 0;
+    for (let n of nums) {
+        n = Math.abs(n - getMean(nums)); // find the difference between the number and the mean
+        n = n ** 2; // square each number
+        total += n;
+    }
+    total /= nums.length; // gets the mean of the total
+    total = total ** 0.5; // square roots the total
+    return Number(total.toFixed(2));
 }
 let basicStatsAnalyzeButton = document.querySelector("button#analyze");
 basicStatsAnalyzeButton.addEventListener("click", function () {
@@ -59,10 +75,43 @@ basicStatsAnalyzeButton.addEventListener("click", function () {
 });
 // PART B: Advanced Integer Stats
 function getLeastCommonMultiple(nums) {
-    return NaN; // remove me!
+    let lcm = nums[nums.length - 1] - 1;
+    let work = false;
+    while (!work) {
+        lcm++;
+        for (const n of nums) {
+            let dividedNum = lcm / n;
+            if (dividedNum % 1 === 0) {
+                work = true;
+            }
+            else {
+                work = false;
+                break;
+            }
+        }
+    }
+    return lcm;
 }
 function getAllCommonFactors(nums) {
-    return [NaN]; // remove me!
+    let commonFactors = [];
+    let commonFactor = nums[0];
+    let work = true;
+    while (commonFactor >= 1) {
+        for (const n of nums) {
+            if ((n / commonFactor) % 1 == 0) {
+                work = true;
+            }
+            else {
+                work = false;
+                break;
+            }
+        }
+        if (work) {
+            commonFactors.push(commonFactor);
+        }
+        commonFactor--;
+    }
+    return commonFactors;
 }
 let advancedStatsAnalyzeButton = document.querySelector("button#analyze-advanced");
 advancedStatsAnalyzeButton.addEventListener("click", function () {
